@@ -1,0 +1,96 @@
+//
+//  NewsTableViewModel.swift
+//  MyNewsPaper
+//
+//  Created by 박성영 on 19/03/2020.
+//  Copyright © 2020 박성영. All rights reserved.
+//
+
+import UIKit
+
+protocol NewsTableProtocol {
+    
+    var title: String? { get }
+    var titleDidChange: ((NewsTableProtocol) -> ())? { get set }
+    
+    var date : String? { get }
+    var dateDidChange: ((NewsTableProtocol) -> ())? { get set }
+    
+    var newsFeed : NewsModel? { get }
+    var newsFeedDidChange: ((NewsTableProtocol) -> ())? { get set }
+    
+    init(news: [NewsModel])
+    func back(completion:@escaping () -> Swift.Void)  //뒤로가기 버튼 누를시 출력
+    
+    func cellInstance(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
+    
+    func changeTitle(indexPath : IndexPath)
+    
+    func changeDate(indexPath : IndexPath)
+    
+    func changeNew(indexPath : IndexPath)
+}
+
+public class NewsTableViewModel : NewsTableProtocol{
+    
+    var newsFeed: NewsModel? {
+        didSet {
+            self.newsFeedDidChange?(self)
+        }
+    }
+    
+    var newsFeedDidChange: ((NewsTableProtocol) -> ())?
+    
+    func changeNew(indexPath: IndexPath) {
+        newsFeed = news[indexPath.row]
+    }
+    
+
+    var news : [NewsModel] = []
+    
+    //    var myFeed : NSArray = []
+    //    var feedImgs: [AnyObject] = []
+    //    var text : String!
+    
+    required init(news : [NewsModel]){
+        self.news = news
+    }
+    
+    var title: String?{
+        didSet {
+            self.titleDidChange?(self)
+        }
+    }
+    
+    var titleDidChange: ((NewsTableProtocol) -> ())?
+    
+    var date: String? {
+        didSet {
+            self.dateDidChange?(self)
+        }
+    }
+    
+    var dateDidChange: ((NewsTableProtocol) -> ())?
+    
+    func back(completion: @escaping () -> Void) { //뒤로가기 누르면 출력
+        print(#function)
+        completion()
+    }
+    
+    func changeTitle(indexPath: IndexPath) {
+        self.title = news[indexPath.row].title
+    }
+    
+    func changeDate(indexPath: IndexPath) {
+        self.date = news[indexPath.row].Date
+       }
+    
+    func cellInstance(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell{
+        let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCell", for: indexPath) as! NewsTableViewCell
+        changeTitle(indexPath: indexPath)
+        changeDate(indexPath: indexPath)
+        cell.setUp(self)
+        return cell
+    }
+    
+}
