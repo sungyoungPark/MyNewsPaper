@@ -61,6 +61,19 @@ class XmlParserManager : NSObject , XMLParserDelegate{
         }
     }
     
+    // 현재 테그에 담겨있는 문자열 전달
+     func parser(_ parser: XMLParser, foundCharacters string: String) {
+         if element.isEqual(to: "title") {
+             ftitle.append(string)
+         } else if element.isEqual(to: "link") {
+             link.append(string)
+         } else if element.isEqual(to: "description") {
+             fdescription.append(string)
+         } else if element.isEqual(to: "pubDate") {
+             fdate.append(string)
+         }
+     }
+    
     // XML 파서가 종료 테그를 만나면 호출됨
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
@@ -84,17 +97,5 @@ class XmlParserManager : NSObject , XMLParserDelegate{
         }
     }
     
-    // 현재 테그에 담겨있는 문자열 전달
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        if element.isEqual(to: "title") {
-            ftitle.append(string)
-        } else if element.isEqual(to: "link") {
-            link.append(string)
-        } else if element.isEqual(to: "description") {
-            fdescription.append(string)
-        } else if element.isEqual(to: "pubDate") {
-            fdate.append(string)
-        }
-    }
 }
 
