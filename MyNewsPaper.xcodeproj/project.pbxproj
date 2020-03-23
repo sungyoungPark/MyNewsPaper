@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B0B174624290AA700DBD861 /* HtmlParserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0B174524290AA700DBD861 /* HtmlParserManager.swift */; };
 		5B0B1F572424CC2F00A8E6B6 /* NewsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0B1F562424CC2F00A8E6B6 /* NewsModel.swift */; };
 		5B0B1F5C2424DFF800A8E6B6 /* XmlParserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0B1F5B2424DFF800A8E6B6 /* XmlParserManager.swift */; };
 		5B32D3742422392400E9821A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B32D3732422392400E9821A /* AppDelegate.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B0B174524290AA700DBD861 /* HtmlParserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlParserManager.swift; sourceTree = "<group>"; };
 		5B0B1F562424CC2F00A8E6B6 /* NewsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsModel.swift; sourceTree = "<group>"; };
 		5B0B1F5B2424DFF800A8E6B6 /* XmlParserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XmlParserManager.swift; sourceTree = "<group>"; };
 		5B32D3702422392400E9821A /* MyNewsPaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNewsPaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				5B0B1F5B2424DFF800A8E6B6 /* XmlParserManager.swift */,
+				5B0B174524290AA700DBD861 /* HtmlParserManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				5BB7446C24268D65008EC4DD /* NewsItemViewModel.swift in Sources */,
 				5BB7446A24268A90008EC4DD /* NewsItemViewController.swift in Sources */,
 				5B32D37E2422392400E9821A /* MyNewsPaper.xcdatamodeld in Sources */,
+				5B0B174624290AA700DBD861 /* HtmlParserManager.swift in Sources */,
 				5B7CCB8324227FF9000C13FE /* NewsTableViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

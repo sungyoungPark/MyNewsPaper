@@ -9,21 +9,26 @@
 import UIKit
 
 class NewsTableViewCell: UITableViewCell {
-
+    
     func setUp(_ viewModel : NewsTableViewModel){
-        self.textLabel?.text = viewModel.title
-        self.detailTextLabel?.text = viewModel.date
+        self.textLabel?.text = viewModel.newsFeed?.title
+        self.detailTextLabel?.text = viewModel.newsFeed?.date
+        if viewModel.newsFeed?.thumbnail != "" {
+            let url = URL(string: (viewModel.newsFeed?.thumbnail!)!)
+            let data = try? Data(contentsOf: url!)
+            self.imageView?.image = UIImage(data: data!)
+        }
     }
     
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//    }
-//
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-
+    //    override func awakeFromNib() {
+    //        super.awakeFromNib()
+    //        // Initialization code
+    //    }
+    //
+    //    override func setSelected(_ selected: Bool, animated: Bool) {
+    //        super.setSelected(selected, animated: animated)
+    //
+    //        // Configure the view for the selected state
+    //    }
+    
 }

@@ -16,6 +16,9 @@ protocol NewsTableProtocol {
     var date : String? { get }
     var dateDidChange: ((NewsTableProtocol) -> ())? { get set }
     
+    var thumbnail : String? { get }
+    var thumbnailDidChange: ((NewsTableProtocol) -> ())? { get set }
+    
     var newsFeed : NewsModel? { get }
     var newsFeedDidChange: ((NewsTableProtocol) -> ())? { get set }
     
@@ -28,7 +31,9 @@ protocol NewsTableProtocol {
     
     func changeDate(indexPath : IndexPath)
     
-    func changeNew(indexPath : IndexPath)
+    func changeNews(indexPath : IndexPath)
+    
+    func changeThumbnail(indexPath : IndexPath)
 }
 
 public class NewsTableViewModel : NewsTableProtocol{
@@ -41,16 +46,12 @@ public class NewsTableViewModel : NewsTableProtocol{
     
     var newsFeedDidChange: ((NewsTableProtocol) -> ())?
     
-    func changeNew(indexPath: IndexPath) {
+    func changeNews(indexPath: IndexPath) {
         newsFeed = news[indexPath.row]
     }
     
 
     var news : [NewsModel] = []
-    
-    //    var myFeed : NSArray = []
-    //    var feedImgs: [AnyObject] = []
-    //    var text : String!
     
     required init(news : [NewsModel]){
         self.news = news
@@ -72,6 +73,14 @@ public class NewsTableViewModel : NewsTableProtocol{
     
     var dateDidChange: ((NewsTableProtocol) -> ())?
     
+    var thumbnail: String?{
+        didSet{
+            self.thumbnailDidChange?(self)
+        }
+    }
+    
+    var thumbnailDidChange: ((NewsTableProtocol) -> ())?
+    
     func back(completion: @escaping () -> Void) { //뒤로가기 누르면 출력
         print(#function)
         completion()
@@ -82,13 +91,19 @@ public class NewsTableViewModel : NewsTableProtocol{
     }
     
     func changeDate(indexPath: IndexPath) {
-        self.date = news[indexPath.row].Date
+        self.date = news[indexPath.row].date
+       }
+    
+    func changeThumbnail(indexPath: IndexPath) {
+        self.thumbnail = news[indexPath.row].thumbnail
        }
     
     func cellInstance(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell{
         let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCell", for: indexPath) as! NewsTableViewCell
-        changeTitle(indexPath: indexPath)
-        changeDate(indexPath: indexPath)
+        //changeTitle(indexPath: indexPath)
+        //changeDate(indexPath: indexPath)
+        //changeThumbnail(indexPath: indexPath)
+        changeNews(indexPath: indexPath)
         cell.setUp(self)
         return cell
     }

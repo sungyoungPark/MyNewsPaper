@@ -17,7 +17,7 @@ class NewsTableViewController: UITableViewController {
     
     var model = [NewsModel]()
     var viewModel : NewsTableViewModel?
- 
+    var count = 1
     
     @IBOutlet weak var tv: UITableView!
     
@@ -44,12 +44,14 @@ class NewsTableViewController: UITableViewController {
         var title : String?
         var date : String?
         var link : String?
+        var thumbnail : String?
         var news = [NewsModel]()
         for i in 0...feeds.count-1{
             title = (feeds.object(at: i) as AnyObject).object(forKey: "title") as? String
             date = (feeds.object(at: i) as AnyObject).object(forKey: "pubDate") as? String
             link = (feeds.object(at: i) as AnyObject).object(forKey: "link") as? String
-            news.append(NewsModel(title: title, Date: date, link: link))
+            thumbnail = (feeds.object(at: i) as AnyObject).object(forKey: "thumbnail") as? String
+            news.append(NewsModel(thumbnail: thumbnail, title: title, date: date, link: link))
         }
         return news
     }
