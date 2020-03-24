@@ -10,39 +10,69 @@
 import UIKit
 
 class XmlParserManager : NSObject , XMLParserDelegate{
+    
     var parser = XMLParser()
     var htmlParser = HtmlParserManager()
+    private var rssItems : [NewsModel] = []
+    
     var feeds = NSMutableArray()
     var elements = NSMutableDictionary()
     var element = NSString()
     var ftitle = NSMutableString()
     var link = NSMutableString()
-    var img:  [String] = []
+    var img : [String] = []
     var fdescription = NSMutableString()
     var fdate = NSMutableString()
     
+    /*
+     // initilise parser
+     func initWithURL(_ url :URL) -> AnyObject {
+     startParse(url)
+     return self
+     }
+     */
     
-    // initilise parser
-    func initWithURL(_ url :URL) -> AnyObject {
-        startParse(url)
-        return self
-    }
-    
-    func startParse(_ url :URL) {
-        feeds = []
-        parser = XMLParser(contentsOf: url)!
-        parser.delegate = self
-        parser.shouldProcessNamespaces = false
-        parser.shouldReportNamespacePrefixes = false
-        parser.shouldResolveExternalEntities = false
-        parser.parse()
-        
-    }
-    
+    /*
+     func startParse(_ url :URL) {
+     feeds = []
+     parser = XMLParser(contentsOf: url)!
+     parser.delegate = self
+     parser.shouldProcessNamespaces = false
+     parser.shouldReportNamespacePrefixes = false
+     parser.shouldResolveExternalEntities = false
+     parser.parse()
+     
+     }
+     */
     
     func allFeeds() -> NSMutableArray {
         return feeds
     }
+    
+    private var parserCompletionHandler: (([NewsModel]) ->Void)?
+    
+    func parseFeed( url : String, completionHandler: (([NewsModel]) -> Void)?) {
+        
+        self.parserCompletionHandler = completionHandler
+        
+        let request = URLRequest(url: URL(string: url)!)
+        let urlSession = URLSession.shared
+        let task = urlSession.dataTask(with: request) { (data,  response, error) in
+            guard let data = data else{
+                if let error = error{
+                    print(error.localizedDescription)
+                }
+                return
+            }
+            let parser = XMLParser(data: data)
+            parser.delegate = self
+            parser.parse()
+        }
+        task.resume()
+    }
+    
+    
+    
     //xmlParserDelegate 함수
     // XML 파서가 시작 테그를 만나면 호출됨
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
@@ -62,39 +92,50 @@ class XmlParserManager : NSObject , XMLParserDelegate{
     }
     
     // 현재 테그에 담겨있는 문자열 전달
-     func parser(_ parser: XMLParser, foundCharacters string: String) {
-         if element.isEqual(to: "title") {
-             ftitle.append(string)
-         } else if element.isEqual(to: "link") {
-             link.append(string)
-         } else if element.isEqual(to: "description") {
-             fdescription.append(string)
-         } else if element.isEqual(to: "pubDate") {
-             fdate.append(string)
-         }
-     }
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        if element.isEqual(to: "title") {
+            ftitle.append(string)
+        } else if element.isEqual(to: "link") {
+            link.append(string)
+        } else if element.isEqual(to: "description") {
+            fdescription.append(string)
+        } else if element.isEqual(to: "pubDate") {
+            fdate.append(string)
+        }
+    }
     
     // XML 파서가 종료 테그를 만나면 호출됨
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if (elementName as NSString).isEqual(to: "item") {
-            if ftitle != "" {
-                elements.setObject(ftitle, forKey: "title" as NSCopying)
-            }
-            if link != "" {
-                elements.setObject(link, forKey: "link" as NSCopying)
-                let url = htmlParser.parseHtml(link as String)
-                elements.setObject(url, forKey: "thumbnail" as NSCopying)
-               // img.append(url)
-            }
-            if fdescription != "" {
-                elements.setObject(fdescription, forKey: "description" as NSCopying)
-            }
-            if fdate != "" {
-                elements.setObject(fdate, forKey: "pubDate" as NSCopying)
-            }
-            feeds.add(elements)
+            //            if ftitle != "" {
+            //                elements.setObject(ftitle, forKey: "title" as NSCopying)
+            //            }
+            //            if link != "" {
+            //                elements.setObject(link, forKey: "link" as NSCopying)
+            //                let url = htmlParser.parseHtml(link as String)
+            //                elements.setObject(url, forKey: "thumbnail" as NSCopying)
+            //               // img.append(url)
+            //            }
+            //            if fdescription != "" {
+            //                elements.setObject(fdescription, forKey: "description" as NSCopying)
+            //            }
+            //            if fdate != "" {
+            //                elements.setObject(fdate, forKey: "pubDate" as NSCopying)
+            //            }
+            //            feeds.add(elements)
+            let thumbnail = htmlParser.parseHtml(link as String)
+            let rssItem = NewsModel(thumbnail: thumbnail, title: ftitle as String, date: fdate as String, link: link as String)
+            self.rssItems.append(rssItem)
         }
+    }
+    
+    func parserDidEndDocument(_ parser: XMLParser) {
+        parserCompletionHandler?(rssItems)
+    }
+    
+    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+        print(parseError.localizedDescription)
     }
     
 }

@@ -23,39 +23,20 @@ class NewsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        model = makeModel()
         viewModel = NewsTableViewModel(news: model)
-       // configure()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
-
-    func configure(){
-         print("잘됨")
+        fetchData()
     }
     
-    func makeModel()->[NewsModel]{
-        let myParser = XmlParserManager().initWithURL(URL(string: "https://news.google.com/rss")!) as! XmlParserManager
-        let feeds = myParser.feeds
-        var title : String?
-        var date : String?
-        var link : String?
-        var thumbnail : String?
-        var news = [NewsModel]()
-        for i in 0...feeds.count-1{
-            title = (feeds.object(at: i) as AnyObject).object(forKey: "title") as? String
-            date = (feeds.object(at: i) as AnyObject).object(forKey: "pubDate") as? String
-            link = (feeds.object(at: i) as AnyObject).object(forKey: "link") as? String
-            thumbnail = (feeds.object(at: i) as AnyObject).object(forKey: "thumbnail") as? String
-            news.append(NewsModel(thumbnail: thumbnail, title: title, date: date, link: link))
+    func fetchData(){
+        let feedParser = XmlParserManager()
+        feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItems) in
+            self.model = rssItems
+            OperationQueue.main.addOperation {
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
+            }
         }
-        return news
     }
-    
+   
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -65,14 +46,13 @@ class NewsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {  //테이블 셀 갯수
         // #warning Incomplete implementation, return the number of rows
+        viewModel?.news = model
         return model.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       // let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCell", for: indexPath)
-        // Configure the cell...
-        //테이블 셀에 들어갈 값
+      
         return viewModel!.cellInstance(tableView, indexPath: indexPath)
     }
 
@@ -84,6 +64,7 @@ class NewsTableViewController: UITableViewController {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
             newsItemVC?.viewModel = NewsItemViewModel(url: model[indexPath!.row].link!)
+            //print(model[indexPath!.row].thumbnail)
                // newsItemVC.viewModle = NewsItemViewModel()
            // print(model[indexPath!.row])
             }

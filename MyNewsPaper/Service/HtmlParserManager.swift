@@ -22,9 +22,9 @@ class HtmlParserManager{
     
     func parseHtml(_ url : String) ->String{
         let itemListURL = URL(string: url)
-        let itemListHTML = try? String(contentsOf: itemListURL!, encoding: .utf8)
+        let itemListHTML = try? String(contentsOf: itemListURL!, encoding: .isoLatin1)
         if itemListHTML?.contains("og:image\" content=\"") == true {
-        let itemURL = URL(string: itemListHTML!.slice(from: "og:image\" content=\"", to: "\"")!)!
+            let itemURL = URL(string: itemListHTML!.slice(from: "og:image\" content=\"", to: "\"")!)!
             return itemURL.absoluteString
         }
         return ""
