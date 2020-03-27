@@ -58,9 +58,11 @@ class XmlParserManager : NSObject , XMLParserDelegate{
         task.cancel()
         print("wait",rssItems.count)
         var urlPath = ""
-        for num in 0...rssItems.count-1{
-            urlPath = rssItems[num].link!
+        for num in 0...feeds.count-1{
+            urlPath = ((feeds.object(at: num) as AnyObject).object(forKey: "link") as? String)!
             let url = NSURL(string: urlPath)
+            let title = (feeds.object(at: num) as AnyObject).object(forKey: "title") as? String
+            let date = (feeds.object(at: num) as AnyObject).object(forKey: "pubDate") as? String
             
             let session = URLSession.shared
             
@@ -71,10 +73,24 @@ class XmlParserManager : NSObject , XMLParserDelegate{
                     let urlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
                     urlContent?.trimmingCharacters(in: .whitespaces)
                     if urlContent != nil{
-                        self.rssItems[num].thumbnail = self.parseHtml(urlContent!)
+                        let thumbnailLink = self.parseHtml(urlContent!)
+                        if thumbnailLink != "" {
+                            let thumbnailURL = URL(string: thumbnailLink)
+                            let data = try? Data(contentsOf: thumbnailURL!)
+                            let thumbnail = UIImage(data: data!)
+                            let rssItem = NewsModel(thumbnail: thumbnail, title: title, date: date, link: url as URL?)
+                            self.rssItems.append(rssItem)
+                        }
+                        else {
+                            print("no Thumbnail")
+                            let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
+                            self.rssItems.append(rssItem)
+                        }
                     }
                     else{
                         print("no Contents")
+                        let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
+                        self.rssItems.append(rssItem)
                     }
                 }else{
                     print("error occured")
@@ -151,9 +167,16 @@ class XmlParserManager : NSObject , XMLParserDelegate{
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         //print("element",elementName)
         if (elementName as NSString).isEqual(to: "item") {
-            thumbnail = ""
-            let rssItem = NewsModel(thumbnail: thumbnail, title: ftitle as String, date: fdate as String, link: link as String)
-            self.rssItems.append(rssItem)
+            if ftitle != "" {
+                elements.setObject(ftitle, forKey: "title" as NSCopying)
+            }
+            if link != "" {
+                elements.setObject(link, forKey: "link" as NSCopying)
+            }
+            if fdate != "" {
+                elements.setObject(fdate, forKey: "pubDate" as NSCopying)
+            }
+            feeds.add(elements)
         }
     }
     

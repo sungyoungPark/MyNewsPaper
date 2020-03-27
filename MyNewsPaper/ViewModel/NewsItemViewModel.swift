@@ -11,16 +11,17 @@ import Foundation
 protocol NewsItemProtocol {
     var link : URL? { get }
     var linkDidChange: ((NewsItemProtocol) -> ())? { get set }
-    init(url : String)
+    init(url : URL)
 }
 
 public class NewsItemViewModel : NewsItemProtocol{
     var selectedNewsURL = ""
     
-    required init(url: String) {
-        selectedNewsURL = url.replacingOccurrences(of: " ", with:"")
-        selectedNewsURL = selectedNewsURL.replacingOccurrences(of: "\n", with:"")
-        link = URL(string: selectedNewsURL as String)!
+    required init(url: URL) {
+//        selectedNewsURL = url.replacingOccurrences(of: " ", with:"")
+//        selectedNewsURL = selectedNewsURL.replacingOccurrences(of: "\n", with:"")
+//        link = URL(string: selectedNewsURL as String)!
+        link = url
     }
     
     var link: URL?{
