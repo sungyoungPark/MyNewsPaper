@@ -25,9 +25,9 @@ class NewsTableViewCell: UITableViewCell {
                                 print(error!)
                                 return
                             }
-                          
+                            DispatchQueue.main.async {
                                 self.imageView!.image = UIImage(data: data!)
-                            
+                            }
                         }).resume()
             }
             
