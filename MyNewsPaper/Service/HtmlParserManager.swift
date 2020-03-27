@@ -20,9 +20,34 @@ extension String {
 
 class HtmlParserManager{
     
+    func parseFeed(_ link : String, completionHandler: ((NewsModel) -> Void)?){
+        let url = NSURL(string: link)
+        let session = URLSession.shared
+        
+        let task = session.dataTask(with: url! as URL,completionHandler: {(data, response, error) -> Void in
+            if error == nil {
+                let urlContent = NSString(data: data! , encoding: String.Encoding.utf8.rawValue)
+                print("확인//////")
+                if urlContent != nil {
+                    print(urlContent)
+                }
+                else {
+                    print("불러오기 실패")
+                }
+            }else{
+                print(error?.localizedDescription)
+                print("error occured")
+            }
+        })
+        task.resume()
+    }
+    
+    
+    
+    
     func parseHtml(_ url : String) ->String{
         let itemListURL = URL(string: url)
-        let itemListHTML = try? String(contentsOf: itemListURL!, encoding: .isoLatin1)
+        let itemListHTML = try? String(contentsOf: itemListURL!, encoding: .utf8)
         if itemListHTML?.contains("og:image\" content=\"") == true {
             let itemURL = URL(string: itemListHTML!.slice(from: "og:image\" content=\"", to: "\"")!)!
             return itemURL.absoluteString
