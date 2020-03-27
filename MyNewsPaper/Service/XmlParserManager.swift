@@ -10,10 +10,10 @@
 import UIKit
 import SwiftSoup
 
-class XmlParserManager : NSObject , XMLParserDelegate{
+class XmlParserManager : NSObject , XMLParserDelegate {
     
     var parser = XMLParser()
-    var htmlParser = HtmlParserManager()
+    var imageTransfer = ImageTransferManager()
     private var rssItems : [NewsModel] = []
     
     var feeds = NSMutableArray()
@@ -25,7 +25,6 @@ class XmlParserManager : NSObject , XMLParserDelegate{
     var fdescription = NSMutableString()
     var fdate = NSMutableString()
     
-    var thumbnail = ""
     
     func allFeeds() -> NSMutableArray {
         return feeds
@@ -41,6 +40,8 @@ class XmlParserManager : NSObject , XMLParserDelegate{
         
         let request = URLRequest(url: URL(string: url)!)
         let urlSession = URLSession.shared
+//        urlSession.configuration.timeoutIntervalForRequest = 2
+//        urlSession.configuration.timeoutIntervalForResource = 2
         let task = urlSession.dataTask(with: request) { (data,  response, error) in
             guard let data = data else{
                 if let error = error{
@@ -56,7 +57,7 @@ class XmlParserManager : NSObject , XMLParserDelegate{
         task.resume()
         semaphore.wait()
         task.cancel()
-        print("wait",rssItems.count)
+        print("wait",feeds.count)
         var urlPath = ""
         for num in 0...feeds.count-1{
             urlPath = ((feeds.object(at: num) as AnyObject).object(forKey: "link") as? String)!
@@ -77,7 +78,8 @@ class XmlParserManager : NSObject , XMLParserDelegate{
                         if thumbnailLink != "" {
                             let thumbnailURL = URL(string: thumbnailLink)
                             let data = try? Data(contentsOf: thumbnailURL!)
-                            let thumbnail = UIImage(data: data!)
+                            var thumbnail = UIImage(data: data!)
+                            thumbnail = self.imageTransfer.resizeImage(image: thumbnail!, toTheSize: CGSize(width: 70, height: 70))
                             let rssItem = NewsModel(thumbnail: thumbnail, title: title, date: date, link: url as URL?)
                             self.rssItems.append(rssItem)
                         }
@@ -142,12 +144,6 @@ class XmlParserManager : NSObject , XMLParserDelegate{
             fdescription = ""
             fdate = NSMutableString()
             fdate = ""
-        }
-        else if (element as NSString).isEqual(to: "meta"){
-            if attributeDict["property"] == "og:image"{
-                //print(attributeDict)
-                thumbnail = attributeDict["content"]!
-            }
         }
     }
     
