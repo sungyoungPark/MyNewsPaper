@@ -62,6 +62,7 @@ class NewsTableViewController: UITableViewController {
         let feedParser = XmlParserManager()
         feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItems) in
             self.model = rssItems
+            print(self.model.count)
             OperationQueue.main.addOperation {
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
             }
