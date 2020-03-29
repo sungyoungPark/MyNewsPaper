@@ -14,8 +14,8 @@ struct NewsModel {
     let date : String?
     let link : URL?
     let description : String?
+    let keyWord : [String]?
   //  let mainText : String?
-  //  let keyWord : [String]?
 }
 
 

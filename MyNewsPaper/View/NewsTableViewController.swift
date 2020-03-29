@@ -32,22 +32,36 @@ class NewsTableViewController: UITableViewController {
         }
         refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControler.attributedTitle = NSAttributedString(string: "새로고침")
-        
+
         viewModel = NewsTableViewModel(news: model)
         fetchData()
-        //print("다됨")
+        
+//        var time = 2
+//        while true{
+//            print("시작")
+//            sleep(1)
+//            print(time)
+//            if model.count != 0{
+//                break
+//            }
+//
+//            time += 1
+//        }
+        
+        
     }
+    
     
     @objc func refresh(){
         print("refresh")
-        self.refreshControler.endRefreshing()
+        
+        //self.refreshControler.endRefreshing()
     }
     
     func fetchData(){
         let feedParser = XmlParserManager()
         feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItems) in
             self.model = rssItems
-            print(rssItems.count)
             OperationQueue.main.addOperation {
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
             }
@@ -61,6 +75,7 @@ class NewsTableViewController: UITableViewController {
         return 1
     }
     
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {  //테이블 셀 갯수
         // #warning Incomplete implementation, return the number of rows
         viewModel?.news = model
@@ -69,7 +84,6 @@ class NewsTableViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         return viewModel!.cellInstance(tableView, indexPath: indexPath)
     }
     
@@ -81,8 +95,7 @@ class NewsTableViewController: UITableViewController {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
             newsItemVC?.viewModel = NewsItemViewModel(url: model[indexPath!.row].link!)
-            // newsItemVC.viewModle = NewsItemViewModel()
-            // print(model[indexPath!.row])
+            print(model[indexPath!.row].description)
         }
     }
     

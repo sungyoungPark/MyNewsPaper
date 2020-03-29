@@ -23,6 +23,8 @@
 		5B7CCB8624228807000C13FE /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7CCB8524228807000C13FE /* NewsTableViewCell.swift */; };
 		5BB7446A24268A90008EC4DD /* NewsItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB7446924268A90008EC4DD /* NewsItemViewController.swift */; };
 		5BB7446C24268D65008EC4DD /* NewsItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB7446B24268D65008EC4DD /* NewsItemViewModel.swift */; };
+		5BE95C9D24310CAF000FAD53 /* InnerHtmlParserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE95C9C24310CAF000FAD53 /* InnerHtmlParserManager.swift */; };
+		5BE95C9F243118FD000FAD53 /* KeyWordsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE95C9E243118FD000FAD53 /* KeyWordsManager.swift */; };
 		8B9006D0ADF17AB5E1E11A30 /* Pods_MyNewsPaper_MyNewsPaperUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDE76852E65ADBDDD33A51F /* Pods_MyNewsPaper_MyNewsPaperUITests.framework */; };
 		919A922FCAA64892429D82BF /* Pods_MyNewsPaper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE90E8EA200922C688579522 /* Pods_MyNewsPaper.framework */; };
 		E215E4331675623B52D661CB /* Pods_MyNewsPaperTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35302AAAA2B407E1E0A4428B /* Pods_MyNewsPaperTests.framework */; };
@@ -71,6 +73,8 @@
 		5B7CCB8524228807000C13FE /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		5BB7446924268A90008EC4DD /* NewsItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItemViewController.swift; sourceTree = "<group>"; };
 		5BB7446B24268D65008EC4DD /* NewsItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItemViewModel.swift; sourceTree = "<group>"; };
+		5BE95C9C24310CAF000FAD53 /* InnerHtmlParserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnerHtmlParserManager.swift; sourceTree = "<group>"; };
+		5BE95C9E243118FD000FAD53 /* KeyWordsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyWordsManager.swift; sourceTree = "<group>"; };
 		ABDE76852E65ADBDDD33A51F /* Pods_MyNewsPaper_MyNewsPaperUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyNewsPaper_MyNewsPaperUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4C78B411B0870851CED84A9 /* Pods-MyNewsPaper-MyNewsPaperUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewsPaper-MyNewsPaperUITests.release.xcconfig"; path = "Target Support Files/Pods-MyNewsPaper-MyNewsPaperUITests/Pods-MyNewsPaper-MyNewsPaperUITests.release.xcconfig"; sourceTree = "<group>"; };
 		BBB77C1311DFB9954FF116B7 /* Pods-MyNewsPaper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyNewsPaper.release.xcconfig"; path = "Target Support Files/Pods-MyNewsPaper/Pods-MyNewsPaper.release.xcconfig"; sourceTree = "<group>"; };
@@ -122,6 +126,8 @@
 			children = (
 				5B0B1F5B2424DFF800A8E6B6 /* XmlParserManager.swift */,
 				5B0B91D7242E8D0F00C2A7E2 /* ImageTransferManager.swift */,
+				5BE95C9C24310CAF000FAD53 /* InnerHtmlParserManager.swift */,
+				5BE95C9E243118FD000FAD53 /* KeyWordsManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -471,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BE95C9F243118FD000FAD53 /* KeyWordsManager.swift in Sources */,
 				5B0B1F572424CC2F00A8E6B6 /* NewsModel.swift in Sources */,
 				5B7CCB8124227F35000C13FE /* NewsTableViewController.swift in Sources */,
 				5B0B1F5C2424DFF800A8E6B6 /* XmlParserManager.swift in Sources */,
@@ -479,6 +486,7 @@
 				5B7CCB8624228807000C13FE /* NewsTableViewCell.swift in Sources */,
 				5B32D3762422392400E9821A /* SceneDelegate.swift in Sources */,
 				5BB7446C24268D65008EC4DD /* NewsItemViewModel.swift in Sources */,
+				5BE95C9D24310CAF000FAD53 /* InnerHtmlParserManager.swift in Sources */,
 				5BB7446A24268A90008EC4DD /* NewsItemViewController.swift in Sources */,
 				5B32D37E2422392400E9821A /* MyNewsPaper.xcdatamodeld in Sources */,
 				5B7CCB8324227FF9000C13FE /* NewsTableViewModel.swift in Sources */,
