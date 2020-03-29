@@ -18,14 +18,29 @@ class NewsTableViewController: UITableViewController {
     var model = [NewsModel]()
     var viewModel : NewsTableViewModel?
     var count = 1
+    var refreshControler = UIRefreshControl()
     
     @IBOutlet weak var tv: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if #available(iOS 10.0, *) {
+          tableView.refreshControl = refreshControler
+        } else {
+            tableView.addSubview(refreshControler)
+        }
+        refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        refreshControler.attributedTitle = NSAttributedString(string: "새로고침")
+        
         viewModel = NewsTableViewModel(news: model)
         fetchData()
         //print("다됨")
+    }
+    
+    @objc func refresh(){
+        print("refresh")
+        self.refreshControler.endRefreshing()
     }
     
     func fetchData(){
@@ -66,12 +81,10 @@ class NewsTableViewController: UITableViewController {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
             newsItemVC?.viewModel = NewsItemViewModel(url: model[indexPath!.row].link!)
-            print(model[indexPath!.row].thumbnail)
             // newsItemVC.viewModle = NewsItemViewModel()
             // print(model[indexPath!.row])
         }
     }
-    
     
     
     /*

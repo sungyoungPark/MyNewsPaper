@@ -9,10 +9,11 @@
 import UIKit
 
 struct NewsModel {
-    var thumbnail : UIImage?
-    var title : String?
-    var date : String?
-    var link : URL?
+    let thumbnail : UIImage?
+    let title : String?
+    let date : String?
+    let link : URL?
+    let description : String?
   //  let mainText : String?
   //  let keyWord : [String]?
 }

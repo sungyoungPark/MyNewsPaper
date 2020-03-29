@@ -25,6 +25,7 @@ class XmlParserManager : NSObject , XMLParserDelegate {
     var fdescription = NSMutableString()
     var fdate = NSMutableString()
     
+    var innerXmlImageURL = ""
     
     func allFeeds() -> NSMutableArray {
         return feeds
@@ -40,8 +41,8 @@ class XmlParserManager : NSObject , XMLParserDelegate {
         
         let request = URLRequest(url: URL(string: url)!)
         let urlSession = URLSession.shared
-//        urlSession.configuration.timeoutIntervalForRequest = 2
-//        urlSession.configuration.timeoutIntervalForResource = 2
+        //        urlSession.configuration.timeoutIntervalForRequest = 2
+        //        urlSession.configuration.timeoutIntervalForResource = 2
         let task = urlSession.dataTask(with: request) { (data,  response, error) in
             guard let data = data else{
                 if let error = error{
@@ -50,6 +51,8 @@ class XmlParserManager : NSObject , XMLParserDelegate {
                 return
             }
             let parser = XMLParser(data: data)
+            parser.shouldProcessNamespaces = true
+            parser.shouldReportNamespacePrefixes = true
             parser.delegate = self
             parser.parse()
             semaphore.signal()
@@ -61,7 +64,9 @@ class XmlParserManager : NSObject , XMLParserDelegate {
         var urlPath = ""
         for num in 0...feeds.count-1{
             urlPath = ((feeds.object(at: num) as AnyObject).object(forKey: "link") as? String)!
-            let url = NSURL(string: urlPath)
+            urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
+            urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+            let url = URL(string: urlPath)
             let title = (feeds.object(at: num) as AnyObject).object(forKey: "title") as? String
             let date = (feeds.object(at: num) as AnyObject).object(forKey: "pubDate") as? String
             
@@ -69,30 +74,54 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             
             let task2 = session.dataTask(with: url! as URL, completionHandler: {
                 (data, response, error) -> Void in
-                
                 if error == nil {
                     let urlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
-                    urlContent?.trimmingCharacters(in: .whitespaces)
                     if urlContent != nil{
-                        let thumbnailLink = self.parseHtml(urlContent!)
-                        if thumbnailLink != "" {
-                            let thumbnailURL = URL(string: thumbnailLink)
-                            let data = try? Data(contentsOf: thumbnailURL!)
-                            var thumbnail = UIImage(data: data!)
-                            thumbnail = self.imageTransfer.resizeImage(image: thumbnail!, toTheSize: CGSize(width: 70, height: 70))
-                            let rssItem = NewsModel(thumbnail: thumbnail, title: title, date: date, link: url as URL?)
+                        urlContent?.trimmingCharacters(in: .whitespaces)
+                        let parseResult = self.parseHtml(urlContent!)
+                        if parseResult["thumbnail"] != nil {
+                            let thumbnailURL = URL(string: parseResult["thumbnail"]!)
+                            var thumbnail = UIImage()
+                            do {
+                                let data = try Data(contentsOf: thumbnailURL!)
+                                thumbnail = UIImage(data: data)!
+                                thumbnail = self.imageTransfer.resizeImage(image: thumbnail, toTheSize: CGSize(width: 70, height: 70))
+                            } catch{
+                                print("thumbnail URL 오류")
+                            }
+                            
+                            let rssItem = NewsModel(thumbnail: thumbnail, title: title, date: date, link: url as URL?, description: parseResult["description"])
                             self.rssItems.append(rssItem)
                         }
                         else {
-                            print("no Thumbnail")
-                            let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
+                            //                            print(urlPath)
+                            //                            print(title ," no Thumbnail")
+                            let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?, description: parseResult["description"])
                             self.rssItems.append(rssItem)
                         }
                     }
                     else{
+                        print(urlPath)
                         print("no Contents")
-                        let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
-                        self.rssItems.append(rssItem)
+                        //                        let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
+                        //                        self.rssItems.append(rssItem)
+                        //                        let parser = XMLParser(data: data!)
+                        //                        parser.delegate = self
+                        //                        parser.parse()
+                        //                        if self.innerXmlImageURL != ""{
+                        //                            let thumbnailURL = URL(string: self.innerXmlImageURL)
+                        //                            let data = try? Data(contentsOf: thumbnailURL!)
+                        //                            var thumbnail = UIImage(data: data!)
+                        //                            thumbnail = self.imageTransfer.resizeImage(image: thumbnail!, toTheSize: CGSize(width: 70, height: 70))
+                        //
+                        //                            let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
+                        //                            self.rssItems.append(rssItem)
+                        //                            self.innerXmlImageURL = ""
+                        //                        }
+                        //                        else{
+                        //                            let rssItem = NewsModel(thumbnail: UIImage(), title: title, date: date, link: url as URL?)
+                        //                            self.rssItems.append(rssItem)
+                        //                        }
                     }
                 }else{
                     print("error occured")
@@ -107,17 +136,23 @@ class XmlParserManager : NSObject , XMLParserDelegate {
         parserCompletionHandler?(rssItems)
     }
     
-    func parseHtml(_ urlContent : NSString) -> String {
+    func parseHtml(_ urlContent : NSString) -> [String:String] {
+        var result : [String:String] = [:]
         do {
-            
             let doc : Document = try SwiftSoup.parse(urlContent as String)
-            
             let meta : [Element] = try doc.select("meta").array()
             for i in meta{
                 let property = try i.attr("property")
                 if property == "og:image"{
                     let img = (try i.attr("content").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed))!
-                    return img
+                    result.updateValue(img, forKey: "thumbnail")
+                }
+                else if property == "og:description"{
+                    let description = try i.attr("content")
+                    result.updateValue(description, forKey: "description")
+                }
+                if result.count == 2{
+                    return result
                 }
             }
             
@@ -125,7 +160,7 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             print(error.localizedDescription)
             
         }
-        return ""
+        return result
     }
     
     
@@ -144,6 +179,14 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             fdescription = ""
             fdate = NSMutableString()
             fdate = ""
+        }
+        else if (element as NSString).isEqual(to: "meta"){
+            
+            if attributeDict["property"] == "og:image"{
+                print("meta image 찾음")
+                innerXmlImageURL = attributeDict["content"]!
+                parser.abortParsing()
+            }
         }
     }
     
@@ -185,4 +228,3 @@ class XmlParserManager : NSObject , XMLParserDelegate {
     //    }
     
 }
-

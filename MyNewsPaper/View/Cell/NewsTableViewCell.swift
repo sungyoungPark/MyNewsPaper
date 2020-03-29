@@ -12,7 +12,7 @@ class NewsTableViewCell: UITableViewCell {
     
     func setUp(_ viewModel : NewsTableViewModel){
         self.textLabel?.text = viewModel.newsFeed?.title
-        self.detailTextLabel?.text = viewModel.newsFeed?.date
+        self.detailTextLabel?.text = viewModel.newsFeed?.description
         if viewModel.newsFeed?.thumbnail != nil {
 //            print(viewModel.newsFeed?.thumbnail)
 //            let url = URL(string: (viewModel.newsFeed?.thumbnail!)!)
