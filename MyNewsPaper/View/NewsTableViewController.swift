@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import WebKit
 
 protocol NewsTableViewControllerProtocol {
     var viewModel: NewsTableViewModel { get set }
@@ -16,8 +17,10 @@ protocol NewsTableViewControllerProtocol {
 class NewsTableViewController: UITableViewController {
     
     var model = [NewsModel]()
+    var web = WKWebView()
+    var innerHtmlParser = InnerHtmlParserManager()
+    var imageTransfer = ImageTransferManager()
     var viewModel : NewsTableViewModel?
-    var count = 1
     var refreshControler = UIRefreshControl()
     
     @IBOutlet weak var tv: UITableView!
@@ -25,28 +28,30 @@ class NewsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        web.navigationDelegate = self
+        
         if #available(iOS 10.0, *) {
-          tableView.refreshControl = refreshControler
+            tableView.refreshControl = refreshControler
         } else {
             tableView.addSubview(refreshControler)
         }
         refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControler.attributedTitle = NSAttributedString(string: "새로고침")
-
+        
         viewModel = NewsTableViewModel(news: model)
         fetchData()
         
-//        var time = 2
-//        while true{
-//            print("시작")
-//            sleep(1)
-//            print(time)
-//            if model.count != 0{
-//                break
-//            }
-//
-//            time += 1
-//        }
+        //        var time = 2
+        //        while true{
+        //            print("시작")
+        //            sleep(1)
+        //            print(time)
+        //            if model.count != 0{
+        //                break
+        //            }
+        //
+        //            time += 1
+        //        }
         
         
     }
@@ -54,19 +59,33 @@ class NewsTableViewController: UITableViewController {
     
     @objc func refresh(){
         print("refresh")
-        
         //self.refreshControler.endRefreshing()
     }
     
     func fetchData(){
         let feedParser = XmlParserManager()
-        feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItems) in
-            self.model = rssItems
-            print(self.model.count)
-            OperationQueue.main.addOperation {
-                self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
+        feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItem) in
+            // self.model.append(rssItem)
+            if rssItem.description != ""{
+                self.model.append(rssItem)
+            }
+            
+            DispatchQueue.main.async {
+                
+                if rssItem.description == "" && rssItem.keyWord == []{
+                    URLCache.shared.removeAllCachedResponses()
+                    URLCache.shared.diskCapacity = 0
+                    URLCache.shared.memoryCapacity = 0
+                    print(rssItem.title)
+                    let request = URLRequest(url: rssItem.link!)
+                    self.web.load(request)
+                }
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
             }
         }
+        
+        
+        print("fetch")
     }
     
     // MARK: - Table view data source
@@ -135,5 +154,46 @@ class NewsTableViewController: UITableViewController {
      return true
      }
      */
+}
+
+extension NewsTableViewController : WKNavigationDelegate{
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        webView.evaluateJavaScript(
+            "document.getElementsByTagName('meta').length",
+            completionHandler: {(value, error) in
+                let metaCount = value as! Int
+                var image = ""
+                var descript = ""
+                for i in 0...metaCount-1{
+                    webView.evaluateJavaScript("document.getElementsByTagName('meta')["+String(i)+"].outerHTML", completionHandler: {(value, error) in
+                        if (value as! String).contains("\"og:image\""){
+                            image = value as! String
+                        }
+                        else if (value as! String).contains("\"og:description\""){
+                            descript = value as! String
+                        }
+                    })
+                    if image != "" && descript != ""{
+                        break
+                    }
+                }
+                
+                let parseResult = self.innerHtmlParser.parseHtml((image+descript) as NSString)
+                let thumbnailURL = (parseResult!.object(forKey: "thumbnail") as! String)
+                let description = (parseResult!.object(forKey: "description") as! String)
+                let keyWords = (parseResult!.object(forKey: "keywords") as! [String])
+                let thumbnail = self.imageTransfer.makeUIImage(thumbnailURL)
+                let news = NewsModel(thumbnail: thumbnail, title: webView.title, link: webView.url, description: description, keyWord: keyWords)
+                print("webkit 기사 ",  webView.title)
+                self.model.append(news)
+                print("!!! ",  news.title)
+                if error != nil {
+                    print("error")
+                }
+                
+                
+        })
+    }
+    
     
 }

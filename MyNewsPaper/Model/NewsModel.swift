@@ -11,7 +11,7 @@ import UIKit
 struct NewsModel {
     let thumbnail : UIImage?
     let title : String?
-    let date : String?
+    //let date : String?
     let link : URL?
     let description : String?
     let keyWord : [String]?

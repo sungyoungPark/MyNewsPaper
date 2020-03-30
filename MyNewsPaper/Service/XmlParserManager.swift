@@ -21,12 +21,12 @@ class XmlParserManager : NSObject , XMLParserDelegate {
     var link = NSMutableString()
     var fdate = NSMutableString()
     
-    var count = 1
+    //var count = 1
     
     
-    private var parserCompletionHandler: (([NewsModel]) ->Void)?
+    private var parserCompletionHandler: ((NewsModel) ->Void)?
     
-    func parseFeed( url : String, completionHandler: (([NewsModel]) -> Void)?) {
+    func parseFeed( url : String, completionHandler: ((NewsModel) -> Void)?) {
         
         self.parserCompletionHandler = completionHandler
         
@@ -46,7 +46,6 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             parser.parse()
         }
         task.resume()
-        print("ppip")
     }
     
     
@@ -81,8 +80,8 @@ class XmlParserManager : NSObject , XMLParserDelegate {
     // XML 파서가 종료 테그를 만나면 호출됨
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if (elementName as NSString).isEqual(to: "item") {
-            print(count)
-            count += 1
+            //print(count)
+            //count += 1
             if ftitle != "" {
                 elements.setObject(ftitle, forKey: "title" as NSCopying)
             }
@@ -94,14 +93,15 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             }
             let rssItem = self.innerHtmlParser.innerParsing(elements)
             if rssItem != nil {
-                rssItems.append(rssItem!)
+                parserCompletionHandler?(rssItem!)
+                //rssItems.append(rssItem!)
             }
         }
     }
     
     func parserDidEndDocument(_ parser: XMLParser) {
         print("xml parsing finish")
-        parserCompletionHandler?(rssItems)
+        //parserCompletionHandler?(rssItem)
     }
     
 }
