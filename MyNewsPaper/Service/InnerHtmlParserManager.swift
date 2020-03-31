@@ -20,6 +20,10 @@ class InnerHtmlParserManager {
         var urlPath = (elements.object(forKey: "link") as? String)!
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        
+        urlPath = urlPath.trimmingCharacters(in: .whitespaces)
+        urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
+        
         let title = (elements.object(forKey: "title") as? String)!
         
         
@@ -30,6 +34,9 @@ class InnerHtmlParserManager {
                 var urlContent = String(data: data, encoding: .utf8)
                 if urlContent == nil {
                    urlContent = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(0x0422)))
+                }
+                if urlContent == nil {
+                    urlContent = String(decoding : data, as: UTF8.self)
                 }
                 
                 

@@ -54,8 +54,8 @@ class NewsTableViewController: UITableViewController {
     
     @objc func refresh(){
         print("refresh")
-        
-        //self.refreshControler.endRefreshing()
+        fetchData()
+        self.refreshControler.endRefreshing()
     }
     
     func fetchData(){
