@@ -19,7 +19,7 @@ class InnerHtmlParserManager {
         var rssItem : NewsModel?
         var urlPath = (elements.object(forKey: "link") as? String)!
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
-        urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        //urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         
         urlPath = urlPath.trimmingCharacters(in: .whitespaces)
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
@@ -33,7 +33,7 @@ class InnerHtmlParserManager {
                 //var urlContent = String(decoding: data, as: UTF8.self)
                 var urlContent = String(data: data, encoding: .utf8)
                 if urlContent == nil {
-                   urlContent = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(0x0422)))
+                    urlContent = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(0x0422)))
                 }
                 if urlContent == nil {
                     urlContent = String(decoding : data, as: UTF8.self)
@@ -44,10 +44,14 @@ class InnerHtmlParserManager {
                     urlContent = urlContent!.trimmingCharacters(in: .whitespaces)
                     let parseResult = self.parseHtml(urlContent as! NSString)
                     
-                    let thumbnailURL = (parseResult!.object(forKey: "thumbnail") as! String)
+                    var thumbnailURL = (parseResult!.object(forKey: "thumbnail") as! String)
+                    thumbnailURL = thumbnailURL.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
+                    thumbnailURL = thumbnailURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+                    thumbnailURL = thumbnailURL.trimmingCharacters(in: .whitespacesAndNewlines)
+                    
                     let description = (parseResult!.object(forKey: "description") as! String)
                     let keyWords = (parseResult!.object(forKey: "keywords") as! [String])
-                    
+                    print(urlPath)
                     let thumbnail = self.imageTransfer.makeUIImage(thumbnailURL)
                     rssItem = NewsModel(thumbnail: thumbnail, title: title, link: url, description: description, keyWord: keyWords)
                     return rssItem
@@ -56,8 +60,8 @@ class InnerHtmlParserManager {
                     print(url)
                     print("no Contents")
                     return nil
-//                    rssItem = NewsModel(thumbnail: UIImage(), title: title, link: url as URL?, description: "false", keyWord: [])
-//                    return rssItem!
+                    //                    rssItem = NewsModel(thumbnail: UIImage(), title: title, link: url as URL?, description: "false", keyWord: [])
+                    //                    return rssItem!
                 }
             }catch {
                 print(error)

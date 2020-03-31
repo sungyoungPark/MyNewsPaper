@@ -36,19 +36,6 @@ class NewsTableViewController: UITableViewController {
         viewModel = NewsTableViewModel(news: model)
         fetchData()
         
-//        var time = 2
-//        while true{
-//            print("시작")
-//            sleep(1)
-//            print(time)
-//            if model.count != 0{
-//                break
-//            }
-//
-//            time += 1
-//        }
-        
-        
     }
     
     
@@ -60,7 +47,7 @@ class NewsTableViewController: UITableViewController {
     
     func fetchData(){
         let feedParser = XmlParserManager()
-        feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItems) in
+        feedParser.parseFeed(url: "https://news.google.com/rss?gl=KR&hl=ko&ceid=KR:ko") { (rssItems) in
             self.model = rssItems
             print(self.model.count)
             OperationQueue.main.addOperation {
