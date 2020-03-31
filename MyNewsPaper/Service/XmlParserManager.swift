@@ -8,12 +8,13 @@
 
 //import Foundation
 import UIKit
+import WebKit
 
 class XmlParserManager : NSObject , XMLParserDelegate {
     
     var parser = XMLParser()
     var innerHtmlParser = InnerHtmlParserManager()
-    private var rssItems : [NewsModel] = []
+    let web = WKWebView()
     
     var elements = NSMutableDictionary()
     var element = NSString()
@@ -21,34 +22,27 @@ class XmlParserManager : NSObject , XMLParserDelegate {
     var link = NSMutableString()
     var fdate = NSMutableString()
     
+    var completeParsing : [NewsModel] = []
+    var failParsing = NSMutableArray() 
+    var failLink : [String] = []
+    var failTitle : [String] = []
+    
+    private var rssItems : [NewsModel] = []
     //var count = 1
     
     
     private var parserCompletionHandler: ((NewsModel) ->Void)?
     
-    func parseFeed( url : String, completionHandler: ((NewsModel) -> Void)?) {
-        
-        self.parserCompletionHandler = completionHandler
-        
-        let request = URLRequest(url: URL(string: url)!)
-        let urlSession = URLSession.shared
-        let task = urlSession.dataTask(with: request) { (data,  response, error) in
-            guard let data = data else{
-                if let error = error{
-                    print(error.localizedDescription)
-                }
-                return
-            }
+    func parseFeed(_ data : Data){
             let parser = XMLParser(data: data)
             parser.shouldProcessNamespaces = true
             parser.shouldReportNamespacePrefixes = true
             parser.delegate = self
+            print("파싱 시작")
             parser.parse()
-        }
-        task.resume()
     }
     
-    
+
     
     //xmlParserDelegate 함수
     // XML 파서가 시작 테그를 만나면 호출됨
@@ -93,9 +87,15 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             }
             let rssItem = self.innerHtmlParser.innerParsing(elements)
             if rssItem != nil {
+                completeParsing.append(rssItem!)
                 parserCompletionHandler?(rssItem!)
-                //rssItems.append(rssItem!)
             }
+            else{
+                //failParsing.add(elements)
+                failLink.append(link as String)
+                failTitle.append(link as String)
+            }
+            
         }
     }
     
