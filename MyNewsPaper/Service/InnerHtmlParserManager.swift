@@ -54,7 +54,7 @@ class InnerHtmlParserManager {
                     let keyWords = (parseResult!.object(forKey: "keywords") as! [String])
                     let thumbnail = self.imageTransfer.makeUIImage(thumbnailURL)
                     
-                    if description == "" && keyWords == [] && thumbnail == nil{
+                    if description == "" && keyWords == []{
                         print("썸네일, 본문, 키워드 없음")
                         return nil
                     }

@@ -19,12 +19,14 @@ class KeyWordsManager{
         for i in myArr{
             //print(i)
             let update = i.trimmingCharacters(in: .whitespacesAndNewlines)
-            if update != ""{
-                if result[i] != nil{
-                    result[i]! += 1
-                }
-                else{
-                    result.updateValue(1, forKey: update)
+            if update.count >= 2{
+                if update != ""{
+                    if result[i] != nil{
+                        result[i]! += 1
+                    }
+                    else{
+                        result.updateValue(1, forKey: update)
+                    }
                 }
             }
         }
@@ -53,8 +55,8 @@ class KeyWordsManager{
             else{
                 subKeyWord.append(word.0)
             }
-           // print("key:",keyWord_result )
-           // print("sub : ",subKeyWord)
+            // print("key:",keyWord_result )
+            // print("sub : ",subKeyWord)
         }
         subKeyWord = subKeyWord.sorted()
         if keyWord_result.count == 3 {

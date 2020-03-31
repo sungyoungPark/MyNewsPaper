@@ -10,18 +10,34 @@ import Foundation
 
 protocol NewsItemProtocol {
     var link : URL? { get }
+    var title : String { get }
+    var keyWord : String { get }
+    
     var linkDidChange: ((NewsItemProtocol) -> ())? { get set }
-    init(url : URL)
+    init(news : NewsModel)
 }
 
 public class NewsItemViewModel : NewsItemProtocol{
+ 
+    var title: String
+    
+    var keyWord: String
+    
     var selectedNewsURL = ""
     
-    required init(url: URL) {
-//        selectedNewsURL = url.replacingOccurrences(of: " ", with:"")
-//        selectedNewsURL = selectedNewsURL.replacingOccurrences(of: "\n", with:"")
-//        link = URL(string: selectedNewsURL as String)!
-        link = url
+    required  init(news : NewsModel) {
+        link = news.link
+        title = news.title!
+        if news.keyWord!.count != 0{
+            var keywords = ""
+            for i in news.keyWord!{
+                keywords.append(i + "   ")
+            }
+            keyWord = keywords
+        }
+        else{
+            keyWord = ""
+        }
     }
     
     var link: URL?{

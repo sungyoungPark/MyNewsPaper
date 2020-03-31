@@ -67,8 +67,41 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ay9-rj-i2o">
+                                <rect key="frame" x="0.0" y="88" width="414" height="89.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="F2y-fx-HWa">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="89.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="제목 :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nYb-94-yqy">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="45"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="키워드 :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xhV-N0-hWI">
+                                                <rect key="frame" x="0.0" y="45" width="414" height="44.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="xhV-N0-hWI" firstAttribute="height" secondItem="F2y-fx-HWa" secondAttribute="height" multiplier="0.5" id="DLP-6c-opl"/>
+                                            <constraint firstItem="nYb-94-yqy" firstAttribute="height" secondItem="F2y-fx-HWa" secondAttribute="height" multiplier="0.5" id="zPE-J9-gFS"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="F2y-fx-HWa" secondAttribute="bottom" id="Rf6-47-81H"/>
+                                    <constraint firstAttribute="trailing" secondItem="F2y-fx-HWa" secondAttribute="trailing" id="W1m-jl-PRx"/>
+                                    <constraint firstItem="F2y-fx-HWa" firstAttribute="top" secondItem="ay9-rj-i2o" secondAttribute="top" id="lTm-yP-q63"/>
+                                    <constraint firstItem="F2y-fx-HWa" firstAttribute="leading" secondItem="ay9-rj-i2o" secondAttribute="leading" id="qMN-LZ-pXV"/>
+                                </constraints>
+                            </view>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lKf-bW-woo">
-                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <rect key="frame" x="0.0" y="177.5" width="414" height="718.5"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <wkWebViewConfiguration key="configuration">
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
@@ -78,16 +111,22 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="lKf-bW-woo" firstAttribute="trailing" secondItem="gJF-CD-pl0" secondAttribute="trailing" id="4M0-Lx-4mc"/>
-                            <constraint firstItem="lKf-bW-woo" firstAttribute="leading" secondItem="gJF-CD-pl0" secondAttribute="leading" id="SPe-6R-py9"/>
-                            <constraint firstItem="gJF-CD-pl0" firstAttribute="top" secondItem="lKf-bW-woo" secondAttribute="top" id="VaG-Id-ImO"/>
-                            <constraint firstItem="lKf-bW-woo" firstAttribute="bottom" secondItem="gJF-CD-pl0" secondAttribute="bottom" id="d9U-qV-hBA"/>
+                            <constraint firstItem="lKf-bW-woo" firstAttribute="trailing" secondItem="gJF-CD-pl0" secondAttribute="trailing" id="5CC-c8-7Gd"/>
+                            <constraint firstItem="ay9-rj-i2o" firstAttribute="leading" secondItem="gJF-CD-pl0" secondAttribute="leading" id="JdP-cd-4mD"/>
+                            <constraint firstItem="ay9-rj-i2o" firstAttribute="top" secondItem="gJF-CD-pl0" secondAttribute="top" id="NU3-zP-cJW"/>
+                            <constraint firstItem="ay9-rj-i2o" firstAttribute="height" secondItem="EBu-HF-5bt" secondAttribute="height" multiplier="0.1" id="ZtH-Su-lCE"/>
+                            <constraint firstItem="lKf-bW-woo" firstAttribute="top" secondItem="ay9-rj-i2o" secondAttribute="bottom" id="m4L-Ba-Yue"/>
+                            <constraint firstAttribute="bottom" secondItem="lKf-bW-woo" secondAttribute="bottom" id="pnB-KH-YPs"/>
+                            <constraint firstItem="lKf-bW-woo" firstAttribute="leading" secondItem="gJF-CD-pl0" secondAttribute="leading" id="sgv-dH-ddQ"/>
+                            <constraint firstItem="ay9-rj-i2o" firstAttribute="trailing" secondItem="gJF-CD-pl0" secondAttribute="trailing" id="vaH-OY-cNK"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="gJF-CD-pl0"/>
                     </view>
                     <navigationItem key="navigationItem" id="Kp3-4f-pzB"/>
                     <connections>
                         <outlet property="webView" destination="lKf-bW-woo" id="hPU-o8-rrM"/>
+                        <outlet property="webViewKeyWord" destination="xhV-N0-hWI" id="M5k-O1-TJc"/>
+                        <outlet property="webViewTitle" destination="nYb-94-yqy" id="ySV-dc-6Il"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xlB-oR-pBr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

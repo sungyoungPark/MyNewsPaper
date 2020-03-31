@@ -14,8 +14,11 @@ import WebKit
 //}
 
 class NewsItemViewController: UIViewController {
-
+    
     @IBOutlet var webView: WKWebView!
+    @IBOutlet var webViewTitle: UILabel!
+    @IBOutlet var webViewKeyWord: UILabel!
+    
     var viewModel : NewsItemViewModel?
     
     override func viewDidLoad() {
@@ -23,11 +26,13 @@ class NewsItemViewController: UIViewController {
         print("hello")
         print(viewModel?.link)
         webView.load(URLRequest(url: viewModel!.link!))
+        webViewTitle.text = viewModel?.title
+        webViewKeyWord.text = viewModel?.keyWord
         // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear( animated )
     }
-
+    
 }

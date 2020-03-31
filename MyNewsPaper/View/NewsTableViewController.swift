@@ -31,7 +31,7 @@ class NewsTableViewController: UITableViewController {
             tableView.addSubview(refreshControler)
         }
         refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        refreshControler.attributedTitle = NSAttributedString(string: "새로고침")
+        refreshControler.attributedTitle = NSAttributedString(string: "뉴스 불러오는 중")
         refreshControler.beginRefreshing()
         viewModel = NewsTableViewModel(news: model)
         fetchData()
@@ -87,8 +87,8 @@ class NewsTableViewController: UITableViewController {
         if segue.identifier == "openPage" {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
-            newsItemVC?.viewModel = NewsItemViewModel(url: model[indexPath!.row].link!)
-            print(model[indexPath!.row].description)
+            newsItemVC?.viewModel = NewsItemViewModel(news: model[indexPath!.row])
+            //print(model[indexPath!.row].description)
         }
     }
     
