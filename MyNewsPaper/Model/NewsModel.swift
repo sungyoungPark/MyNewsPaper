@@ -17,5 +17,3 @@ struct NewsModel {
     let keyWord : [String]?
   //  let mainText : String?
 }
-
-

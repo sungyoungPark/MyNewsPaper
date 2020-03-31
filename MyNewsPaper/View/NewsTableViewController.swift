@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import WebKit
 
 protocol NewsTableViewControllerProtocol {
     var viewModel: NewsTableViewModel { get set }
@@ -17,47 +16,37 @@ protocol NewsTableViewControllerProtocol {
 class NewsTableViewController: UITableViewController {
     
     var model = [NewsModel]()
-
-    var web = WKWebView()
-    var retryURL = ""
-    //var retryModel = [NewsModel]()
-    
-    var innerHtmlParser = InnerHtmlParserManager()
-    var imageTransfer = ImageTransferManager()
     var viewModel : NewsTableViewModel?
+    var count = 1
     var refreshControler = UIRefreshControl()
-    let sema = DispatchSemaphore.init(value: 0)
-
-    
-    private var parserCompletionHandler: ((NewsModel) ->Void)?
     
     @IBOutlet weak var tv: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        web.navigationDelegate = self
-        
         if #available(iOS 10.0, *) {
-            tableView.refreshControl = refreshControler
+          tableView.refreshControl = refreshControler
         } else {
             tableView.addSubview(refreshControler)
         }
         refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControler.attributedTitle = NSAttributedString(string: "새로고침")
-        
+
         viewModel = NewsTableViewModel(news: model)
+        fetchData()
         
-        fetchData(){ (result) in  //result는 [NewsModel] 최종적인 뉴스피드들 집합
-            
-            self.model = result
-            
-            OperationQueue.main.addOperation {
-                self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-                print(self.model.count)
-            }
-            
-        }
+//        var time = 2
+//        while true{
+//            print("시작")
+//            sleep(1)
+//            print(time)
+//            if model.count != 0{
+//                break
+//            }
+//
+//            time += 1
+//        }
         
         
     }
@@ -66,85 +55,19 @@ class NewsTableViewController: UITableViewController {
     @objc func refresh(){
         print("refresh")
         
-        tableView.reloadData()
-        self.refreshControler.endRefreshing()
+        //self.refreshControler.endRefreshing()
     }
     
-    
-    func fetchData( completionHandler: (([NewsModel]) -> Void)?) {
-
-        var result : [NewsModel] = []
-//        completionHandler!(result)
+    func fetchData(){
         let feedParser = XmlParserManager()
-        let url = "https://news.google.com/rss"
-        let urlPath = URL(string: url)
-        let request = URLRequest(url: urlPath!)
-        let urlSession = URLSession.shared
-        let task = urlSession.dataTask(with: request) { (data,  response, error) in
-            guard let data = data else{
-                if let error = error{
-                    print(error.localizedDescription)
-                }
-                return
+        feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItems) in
+            self.model = rssItems
+            print(self.model.count)
+            OperationQueue.main.addOperation {
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
             }
-            feedParser.parseFeed(data)
-            print("짱짱맨")
-            result = feedParser.completeParsing
-            let failLink = feedParser.failLink
-            let failTitle = feedParser.failTitle
-            for i in 0...failLink.count-1{
-                let request2 = URLRequest(url: URL(string: failLink[i])! )
-                let task2 = urlSession.dataTask(with: request2) { (data , response, error) in   //webkit 업무
-                    guard data != nil else{
-                        if let error = error{
-                            print(error.localizedDescription)
-                        }
-                        return
-                    }
-//                    URLCache.shared.removeAllCachedResponses()
-//                    URLCache.shared.diskCapacity = 0
-//                    URLCache.shared.memoryCapacity = 0
-                    DispatchQueue.main.async {
-                        self.web.load(request2)
-                    }
-                    self.sema.wait()
-                    print("빡빡맨")
-                    completionHandler!(result)
-                }
-                print("너굴맨")
-                task2.resume()
-                print("근육맨")
-            }
-            print("쾌걸")
         }
-        task.resume()
-        
     }
-    
-    //            feedParser.parseFeed(url: "https://news.google.com/rss") { (rssItem) in
-    //                // self.model.append(rssItem)
-    //                if rssItem.description != ""{
-    //                    self.model.append(rssItem)
-    //                }
-    //                else{
-    //                    self.reTry(rssItem)
-    //                }
-    //
-    //
-    //                DispatchQueue.main.async {
-    //
-    //                    //                if rssItem.description == "" && rssItem.keyWord == []{
-    //                    //                    print(rssItem.title)
-    //                    //                    let request = URLRequest(url: rssItem.link!)
-    //                    //                    self.web.load(request)
-    //                    //                }
-    //                    self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-    //                }
-    //            }
-    //
-    //
-    //            print("fetch")
-    //        }
     
     // MARK: - Table view data source
     
@@ -212,21 +135,5 @@ class NewsTableViewController: UITableViewController {
      return true
      }
      */
-}
-
-extension NewsTableViewController : WKNavigationDelegate{
-        
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        //print("웹뷰 로드 끝")
-        print(webView.url)
-        retryURL = webView.url!.absoluteString
-        let retryNews = self.innerHtmlParser.retryParsing(self.retryURL, webView.title!)
-        if retryNews != nil {
-            model.append(retryNews!)
-        }
-        
-        sema.signal()
-    }
-    
     
 }

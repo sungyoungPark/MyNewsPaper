@@ -8,13 +8,12 @@
 
 //import Foundation
 import UIKit
-import WebKit
 
 class XmlParserManager : NSObject , XMLParserDelegate {
     
     var parser = XMLParser()
     var innerHtmlParser = InnerHtmlParserManager()
-    let web = WKWebView()
+    private var rssItems : [NewsModel] = []
     
     var elements = NSMutableDictionary()
     var element = NSString()
@@ -22,27 +21,35 @@ class XmlParserManager : NSObject , XMLParserDelegate {
     var link = NSMutableString()
     var fdate = NSMutableString()
     
-    var completeParsing : [NewsModel] = []
-    var failParsing = NSMutableArray() 
-    var failLink : [String] = []
-    var failTitle : [String] = []
-    
-    private var rssItems : [NewsModel] = []
-    //var count = 1
+    var count = 1
     
     
-    private var parserCompletionHandler: ((NewsModel) ->Void)?
+    private var parserCompletionHandler: (([NewsModel]) ->Void)?
     
-    func parseFeed(_ data : Data){
+    func parseFeed( url : String, completionHandler: (([NewsModel]) -> Void)?) {
+        
+        self.parserCompletionHandler = completionHandler
+        
+        let request = URLRequest(url: URL(string: url)!)
+        let urlSession = URLSession.shared
+        let task = urlSession.dataTask(with: request) { (data,  response, error) in
+            guard let data = data else{
+                if let error = error{
+                    print(error.localizedDescription)
+                }
+                return
+            }
             let parser = XMLParser(data: data)
             parser.shouldProcessNamespaces = true
             parser.shouldReportNamespacePrefixes = true
             parser.delegate = self
-            print("파싱 시작")
             parser.parse()
+        }
+        task.resume()
+        print("ppip")
     }
     
-
+    
     
     //xmlParserDelegate 함수
     // XML 파서가 시작 테그를 만나면 호출됨
@@ -55,8 +62,6 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             ftitle = ""
             link = NSMutableString()
             link = ""
-            fdate = NSMutableString()
-            fdate = ""
         }
     }
     
@@ -66,42 +71,30 @@ class XmlParserManager : NSObject , XMLParserDelegate {
             ftitle.append(string)
         } else if element.isEqual(to: "link") {
             link.append(string)
-        } else if element.isEqual(to: "pubDate") {
-            fdate.append(string)
         }
     }
     
     // XML 파서가 종료 테그를 만나면 호출됨
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if (elementName as NSString).isEqual(to: "item") {
-            //print(count)
-            //count += 1
+            print(count)
+            count += 1
             if ftitle != "" {
                 elements.setObject(ftitle, forKey: "title" as NSCopying)
             }
             if link != "" {
                 elements.setObject(link, forKey: "link" as NSCopying)
             }
-            if fdate != "" {
-                elements.setObject(fdate, forKey: "pubDate" as NSCopying)
-            }
             let rssItem = self.innerHtmlParser.innerParsing(elements)
             if rssItem != nil {
-                completeParsing.append(rssItem!)
-                parserCompletionHandler?(rssItem!)
+                rssItems.append(rssItem!)
             }
-            else{
-                //failParsing.add(elements)
-                failLink.append(link as String)
-                failTitle.append(link as String)
-            }
-            
         }
     }
     
     func parserDidEndDocument(_ parser: XMLParser) {
         print("xml parsing finish")
-        //parserCompletionHandler?(rssItem)
+        parserCompletionHandler?(rssItems)
     }
     
 }

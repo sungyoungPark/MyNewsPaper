@@ -22,14 +22,20 @@ class InnerHtmlParserManager {
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let title = (elements.object(forKey: "title") as? String)!
         
+        
         if let url = URL(string: urlPath){
             do{
                 let data = try Data(contentsOf: url)
+                //var urlContent = String(decoding: data, as: UTF8.self)
                 var urlContent = String(data: data, encoding: .utf8)
+                if urlContent == nil {
+                   urlContent = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(0x0422)))
+                }
+                
+                
                 if urlContent != nil {
-                    print("make News")
-                    urlContent = urlContent?.trimmingCharacters(in: .whitespaces)
-                    let parseResult = self.parseHtml(urlContent! as NSString)  //썸네일, 본문 , 키워드 생성
+                    urlContent = urlContent!.trimmingCharacters(in: .whitespaces)
+                    let parseResult = self.parseHtml(urlContent as! NSString)
                     
                     let thumbnailURL = (parseResult!.object(forKey: "thumbnail") as! String)
                     let description = (parseResult!.object(forKey: "description") as! String)
@@ -40,7 +46,7 @@ class InnerHtmlParserManager {
                     return rssItem
                 }
                 else{
-                     print(urlPath)
+                    print(url)
                     print("no Contents")
                     return nil
 //                    rssItem = NewsModel(thumbnail: UIImage(), title: title, link: url as URL?, description: "false", keyWord: [])
@@ -53,7 +59,7 @@ class InnerHtmlParserManager {
         return nil
     }
     
-
+    
     func parseHtml(_ urlContent : NSString) -> NSMutableDictionary? {
         let result = NSMutableDictionary()
         var img = ""
@@ -68,7 +74,7 @@ class InnerHtmlParserManager {
                 let property = try i.attr("property")
                 if property == "og:image" && thumbnailFlag == 0{
                     thumbnailFlag = 1
-                     img = (try i.attr("content").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed))!
+                    img = (try i.attr("content").addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed))!
                     result.setObject(img, forKey: "thumbnail" as NSCopying)
                 }
                 else if property == "og:description" && descriptionFlag == 0{
@@ -91,35 +97,6 @@ class InnerHtmlParserManager {
         result.setObject(img, forKey: "thumbnail" as NSCopying)
         
         return result
-    }
-    
-    func retryParsing(_ url : String, _ title : String) -> NewsModel?{
-        if let url = URL(string: url){
-        do{
-            let data = try Data(contentsOf: url)
-            var urlContent = String(data: data, encoding: .utf8)
-            if urlContent != nil {
-                print("make News")
-                urlContent = urlContent?.trimmingCharacters(in: .whitespaces)
-                let parseResult = self.parseHtml(urlContent! as NSString)  //썸네일, 본문 , 키워드 생성
-                
-                let thumbnailURL = (parseResult!.object(forKey: "thumbnail") as! String)
-                let description = (parseResult!.object(forKey: "description") as! String)
-                let keyWords = (parseResult!.object(forKey: "keywords") as! [String])
-                
-                let thumbnail = self.imageTransfer.makeUIImage(thumbnailURL)
-                let rssItem = NewsModel(thumbnail: thumbnail, title: title, link: url, description: description, keyWord: keyWords)
-                return rssItem
-            }
-            else{
-                print("no Contents!!!!!!")
-                return nil
-            }
-        }catch {
-            print(error)
-        }
-        }
-        return nil
     }
     
     
