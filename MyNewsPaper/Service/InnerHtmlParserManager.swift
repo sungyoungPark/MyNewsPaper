@@ -42,17 +42,23 @@ class InnerHtmlParserManager {
                 
                 if urlContent != nil {
                     urlContent = urlContent!.trimmingCharacters(in: .whitespaces)
-                    let parseResult = self.parseHtml(urlContent as! NSString)
+                    let parseResult = self.parseHtml(urlContent! as NSString)
                     
                     var thumbnailURL = (parseResult!.object(forKey: "thumbnail") as! String)
                     thumbnailURL = thumbnailURL.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
                     thumbnailURL = thumbnailURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
                     thumbnailURL = thumbnailURL.trimmingCharacters(in: .whitespacesAndNewlines)
                     
+                    
                     let description = (parseResult!.object(forKey: "description") as! String)
                     let keyWords = (parseResult!.object(forKey: "keywords") as! [String])
-                    print(urlPath)
                     let thumbnail = self.imageTransfer.makeUIImage(thumbnailURL)
+                    
+                    if description == "" && keyWords == [] && thumbnail == nil{
+                        print("썸네일, 본문, 키워드 없음")
+                        return nil
+                    }
+                    
                     rssItem = NewsModel(thumbnail: thumbnail, title: title, link: url, description: description, keyWord: keyWords)
                     return rssItem
                 }
@@ -60,8 +66,6 @@ class InnerHtmlParserManager {
                     print(url)
                     print("no Contents")
                     return nil
-                    //                    rssItem = NewsModel(thumbnail: UIImage(), title: title, link: url as URL?, description: "false", keyWord: [])
-                    //                    return rssItem!
                 }
             }catch {
                 print(error)
