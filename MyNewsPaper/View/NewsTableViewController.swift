@@ -32,17 +32,15 @@ class NewsTableViewController: UITableViewController {
         }
         refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControler.attributedTitle = NSAttributedString(string: "새로고침")
-
+        refreshControler.beginRefreshing()
         viewModel = NewsTableViewModel(news: model)
         fetchData()
-        
     }
     
     
     @objc func refresh(){
         print("refresh")
         fetchData()
-        self.refreshControler.endRefreshing()
     }
     
     func fetchData(){
@@ -52,7 +50,9 @@ class NewsTableViewController: UITableViewController {
             print(self.model.count)
             OperationQueue.main.addOperation {
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
+                
             }
+            
         }
     }
     
@@ -72,6 +72,11 @@ class NewsTableViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        self.refreshControler.endRefreshing()
+        if self.refreshControler.isRefreshing{
+            
+        }
+        
         return viewModel!.cellInstance(tableView, indexPath: indexPath)
     }
     
