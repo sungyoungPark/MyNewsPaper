@@ -13,7 +13,7 @@ protocol NewsTableProtocol {
     var newsFeedDidChange: ((NewsTableProtocol) -> ())? { get set }
     
     init(news: [NewsModel])
-    func back(completion:@escaping () -> Swift.Void)  //뒤로가기 버튼 누를시 출력
+    //func back(completion:@escaping () -> Swift.Void)  //뒤로가기 버튼 누를시 출력
     
     func cellInstance(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
     
@@ -40,10 +40,10 @@ public class NewsTableViewModel : NewsTableProtocol{
         self.news = news
     }
     
-    func back(completion: @escaping () -> Void) { //뒤로가기 누르면 출력
-        print(#function)
-        completion()
-    }
+//    func back(completion: @escaping () -> Void) { //뒤로가기 누르면 출력
+//        print(#function)
+//        completion()
+//    }
     
     
     func cellInstance(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell{
