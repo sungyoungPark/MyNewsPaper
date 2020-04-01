@@ -18,15 +18,20 @@ class NewsTableViewCell: UITableViewCell {
     
     
     func setUp(_ viewModel : NewsTableViewModel){
-        self.newsTitle?.text = viewModel.newsFeed?.title
-        //newsTitle.numberOfLines = 0
-       // newsTitle.sizeToFit()
-        self.newsDescription?.text = viewModel.newsFeed?.description
+        newsTitle?.text = viewModel.newsFeed?.title
+        newsDescription?.text = viewModel.newsFeed?.description
         if viewModel.newsFeed?.thumbnail != nil {
             self.thumbnailImageView?.image = viewModel.newsFeed?.thumbnail
+        }
+        if viewModel.newsFeed?.keyWord?.count != 0 {
+            var keyword = "/  "
+            for i in (viewModel.newsFeed?.keyWord)!{
+                keyword.append(i + "  /  ")
             }
-        newsKeyword.text = viewModel.newsFeed?.keyWord?.first
-            
+            newsKeyword.text = keyword
+        }
+        
+        
     }
     
     //    override func awakeFromNib() {

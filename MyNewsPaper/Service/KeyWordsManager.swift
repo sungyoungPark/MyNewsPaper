@@ -14,7 +14,7 @@ class KeyWordsManager{
     func makeKeyWords(_ description : String)->[String]{
         var keyWord_result : [String] = []
         var subKeyWord : [String] = []
-        let transDescription = description.replacingOccurrences(of: "..", with: "")
+        let transDescription = description.replacingOccurrences(of: "..", with: " ")
         let myArr = transDescription.components(separatedBy: [" ","?",",","\""])
         var result : [String:Int] = [:]
         for i in myArr{
