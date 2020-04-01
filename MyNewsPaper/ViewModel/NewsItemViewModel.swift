@@ -27,9 +27,9 @@ public class NewsItemViewModel : NewsItemProtocol{
     
     required  init(news : NewsModel) {
         link = news.link
-        title = news.title!
+        title = "제목 : " + news.title!
         if news.keyWord!.count != 0{
-            var keywords = ""
+            var keywords = "키워드 : "
             for i in news.keyWord!{
                 keywords.append(i + "   ")
             }

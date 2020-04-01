@@ -85,6 +85,10 @@ class NewsTableViewController: UITableViewController {
         return viewModel!.cellInstance(tableView, indexPath: indexPath)
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -93,7 +97,7 @@ class NewsTableViewController: UITableViewController {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
             newsItemVC?.viewModel = NewsItemViewModel(news: model[indexPath!.row])
-            print(model[indexPath!.row].thumbnail)
+            print(model[indexPath!.row].description)
         }
     }
     

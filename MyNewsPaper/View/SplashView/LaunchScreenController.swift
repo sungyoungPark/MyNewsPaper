@@ -16,6 +16,7 @@ class LaunchScreenController: UIViewController {
         
         UIView.animate(withDuration: 1.3, animations: {
             self.LogoImage.layer.cornerRadius = self.LogoImage.frame.width/2
+            self.view.backgroundColor = .white
             
         })
         {(success) in

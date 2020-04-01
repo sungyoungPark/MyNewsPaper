@@ -20,7 +20,6 @@ class InnerHtmlParserManager {
         var rssItem : NewsModel?
         var urlPath = (elements.object(forKey: "link") as? String)!
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
-        //urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         
         urlPath = urlPath.trimmingCharacters(in: .whitespaces)
         urlPath = urlPath.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
@@ -97,6 +96,7 @@ class InnerHtmlParserManager {
                 else if property == "og:description" && descriptionFlag == 0{
                     descriptionFlag = 1
                     description = try i.attr("content").trimmingCharacters(in: .whitespacesAndNewlines)
+                    description = description.replacingOccurrences(of: "\n", with: "")
                     if description != ""{
                         keyWords = keyWordsMaker.makeKeyWords(description)
                         result.setObject(description, forKey: "description" as NSCopying)

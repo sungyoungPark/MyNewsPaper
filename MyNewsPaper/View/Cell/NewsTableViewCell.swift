@@ -10,26 +10,22 @@ import UIKit
 
 class NewsTableViewCell: UITableViewCell {
     
+    @IBOutlet var thumbnailImageView: UIImageView!
+    @IBOutlet var newsTitle: UILabel!
+    @IBOutlet var newsDescription: UILabel!
+    @IBOutlet var newsKeyword: UILabel!
+    
+    
+    
     func setUp(_ viewModel : NewsTableViewModel){
-        self.textLabel?.text = viewModel.newsFeed?.title
-        self.detailTextLabel?.text = viewModel.newsFeed?.description
+        self.newsTitle?.text = viewModel.newsFeed?.title
+        //newsTitle.numberOfLines = 0
+       // newsTitle.sizeToFit()
+        self.newsDescription?.text = viewModel.newsFeed?.description
         if viewModel.newsFeed?.thumbnail != nil {
-//            print(viewModel.newsFeed?.thumbnail)
-//            let url = URL(string: (viewModel.newsFeed?.thumbnail!)!)
-//            print(url)
-//            let data = try? Data(contentsOf: url!)
-            self.imageView?.image = viewModel.newsFeed?.thumbnail
-//                        let url = URL(string: (viewModel.newsFeed?.thumbnail!)!)
-//                        URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
-//                            if error != nil {
-//                                print(error!)
-//                                return
-//                            }
-//                            DispatchQueue.main.async {
-//                                self.imageView!.image = UIImage(data: data!)
-//                            }
-//                        }).resume()
+            self.thumbnailImageView?.image = viewModel.newsFeed?.thumbnail
             }
+        newsKeyword.text = viewModel.newsFeed?.keyWord?.first
             
     }
     
