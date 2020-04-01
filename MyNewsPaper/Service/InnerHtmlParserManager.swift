@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import SwiftSoup
+import SwiftSoup  //외부 라이브러리 사용 : https://github.com/scinfu/SwiftSoup
+
 
 
 class InnerHtmlParserManager {
@@ -55,7 +56,8 @@ class InnerHtmlParserManager {
                     let thumbnail = self.imageTransfer.makeUIImage(thumbnailURL)
                     
                     if description == "" && keyWords == []{
-                        print("썸네일, 본문, 키워드 없음")
+                        print(urlPath)
+                        print(" 본문, 키워드 없음")
                         return nil
                     }
                     

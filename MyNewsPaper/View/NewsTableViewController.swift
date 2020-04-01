@@ -18,6 +18,7 @@ class NewsTableViewController: UITableViewController {
     var model = [NewsModel]()
     var viewModel : NewsTableViewModel?
     var count = 1
+    var isloading = false
     var refreshControler = UIRefreshControl()
     
     @IBOutlet weak var tv: UITableView!
@@ -32,7 +33,7 @@ class NewsTableViewController: UITableViewController {
         }
         refreshControler.addTarget(self, action: #selector(refresh), for: .valueChanged)
         refreshControler.attributedTitle = NSAttributedString(string: "뉴스 불러오는 중")
-        refreshControler.beginRefreshing()
+        //refreshControler.beginRefreshing()
         viewModel = NewsTableViewModel(news: model)
         fetchData()
     }
@@ -40,14 +41,19 @@ class NewsTableViewController: UITableViewController {
     
     @objc func refresh(){
         print("refresh")
+       // refreshControler.beginRefreshing()
         fetchData()
     }
     
     func fetchData(){
+        refreshControler.beginRefreshing()
+        print("refershing")
+        isloading = true
         let feedParser = XmlParserManager()
         feedParser.parseFeed(url: "https://news.google.com/rss?gl=KR&hl=ko&ceid=KR:ko") { (rssItems) in
             self.model = rssItems
             print(self.model.count)
+            self.isloading = false
             OperationQueue.main.addOperation {
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .left)
                 
@@ -72,9 +78,8 @@ class NewsTableViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        self.refreshControler.endRefreshing()
-        if self.refreshControler.isRefreshing{
-            
+        if isloading == false{
+            self.refreshControler.endRefreshing()
         }
         
         return viewModel!.cellInstance(tableView, indexPath: indexPath)
@@ -88,7 +93,7 @@ class NewsTableViewController: UITableViewController {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
             newsItemVC?.viewModel = NewsItemViewModel(news: model[indexPath!.row])
-            //print(model[indexPath!.row].description)
+            print(model[indexPath!.row].thumbnail)
         }
     }
     
