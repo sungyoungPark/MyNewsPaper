@@ -25,9 +25,9 @@ class NewsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tableView.accessibilityIdentifier = "newsTableViewIdentifier"
         if #available(iOS 10.0, *) {
-          tableView.refreshControl = refreshControler
+            tableView.refreshControl = refreshControler
         } else {
             tableView.addSubview(refreshControler)
         }
@@ -41,7 +41,7 @@ class NewsTableViewController: UITableViewController {
     
     @objc func refresh(){
         print("refresh")
-       // refreshControler.beginRefreshing()
+        // refreshControler.beginRefreshing()
         fetchData()
     }
     

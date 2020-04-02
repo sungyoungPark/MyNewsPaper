@@ -49,7 +49,7 @@ public class NewsTableViewModel : NewsTableProtocol{
     func cellInstance(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell{
         let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCell", for: indexPath) as! NewsTableViewCell
         let cellImageLayer: CALayer?  = cell.thumbnailImageView.layer
-        
+        cell.accessibilityIdentifier = "newsCell_\(indexPath.row)"
         //이미지를 동그라미로 표현하기 위함
         cellImageLayer!.cornerRadius = 35
         cellImageLayer!.masksToBounds = true
