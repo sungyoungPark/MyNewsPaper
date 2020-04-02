@@ -16,7 +16,7 @@ class ImageTransferManager : NSObject{
             var thumbnail = UIImage()
             do {
                 let data = try Data(contentsOf: thumbnailURL!)
-                print(thumbnailURL)
+                print(thumbnailURL as Any)
                 thumbnail = UIImage(data: data)!
                 thumbnail = resizeImage(image: thumbnail, toTheSize: CGSize(width: 70, height: 70))
             } catch{

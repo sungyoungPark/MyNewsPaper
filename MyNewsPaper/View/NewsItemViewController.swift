@@ -24,7 +24,7 @@ class NewsItemViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("hello")
-        print(viewModel?.link)
+        print((viewModel?.link) as Any )
         webView.load(URLRequest(url: viewModel!.link!))
         webViewTitle.text = viewModel?.title
         webViewKeyWord.text = viewModel?.keyWord

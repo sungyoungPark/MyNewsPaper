@@ -97,7 +97,7 @@ class NewsTableViewController: UITableViewController {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
             newsItemVC?.viewModel = NewsItemViewModel(news: model[indexPath!.row])
-            print(model[indexPath!.row].description)
+            print((model[indexPath!.row].description) as Any)
         }
     }
     
