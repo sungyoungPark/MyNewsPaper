@@ -26,6 +26,7 @@ public class NewsTableViewModel : NewsTableProtocol{
     
     var newsFeed: NewsModel? {
         didSet {
+            print("model 바뀜")
             self.newsFeedDidChange?(self)
         }
     }

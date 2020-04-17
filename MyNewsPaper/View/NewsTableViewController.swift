@@ -26,7 +26,7 @@ class NewsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.accessibilityIdentifier = "newsTableViewIdentifier"
-        if #available(iOS 10.0, *) {
+        if #available(iOS 11.0, *) {
             tableView.refreshControl = refreshControler
         } else {
             tableView.addSubview(refreshControler)
@@ -38,6 +38,10 @@ class NewsTableViewController: UITableViewController {
         fetchData()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
     
     @objc func refresh(){
         print("refresh")
@@ -51,7 +55,8 @@ class NewsTableViewController: UITableViewController {
         isloading = true
         let feedParser = XmlParserManager()
         feedParser.parseFeed(url: "https://news.google.com/rss?gl=KR&hl=ko&ceid=KR:ko") { (rssItems) in
-            self.model = rssItems
+            self.viewModel?.news = rssItems
+            //self.model = rssItems
             print(self.model.count)
             self.isloading = false
             OperationQueue.main.addOperation {
@@ -72,8 +77,8 @@ class NewsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {  //테이블 셀 갯수
         // #warning Incomplete implementation, return the number of rows
-        viewModel?.news = model
-        return model.count
+        //viewModel?.news = model
+        return (viewModel?.news.count)!
     }
     
     
@@ -96,8 +101,9 @@ class NewsTableViewController: UITableViewController {
         if segue.identifier == "openPage" {
             let newsItemVC = segue.destination as? NewsItemViewController
             let indexPath = tv.indexPathForSelectedRow
-            newsItemVC?.viewModel = NewsItemViewModel(news: model[indexPath!.row])
-            print((model[indexPath!.row].description) as Any)
+            newsItemVC?.viewModel = NewsItemViewModel(news: (viewModel?.news[indexPath!.row])!)
+           // newsItemVC?.viewModel = NewsItemViewModel(news: model[indexPath!.row])
+            //print((model[indexPath!.row].description) as Any)
         }
     }
     
