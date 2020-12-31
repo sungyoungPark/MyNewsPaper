@@ -17,6 +17,6 @@
     </figure>
       <figure>
 <img src="appImage/detailNews.png" width="250" height="450">
-<figcaption>⬅︎ 뉴스 화면</figcaption>
+<figcaption>⬅︎ 기사</figcaption>
         </figure>
 </div>
