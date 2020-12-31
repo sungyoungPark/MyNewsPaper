@@ -13,10 +13,10 @@
 </figure>
   <figure>
 <img src="appImage/main.png" width="250" height="450">
-<figcaption>⬅︎ 메인 화면</figcaption>
+<figcaption>⬅︎ 뉴스 테이블</figcaption>
     </figure>
       <figure>
 <img src="appImage/detailNews.png" width="250" height="450">
-<figcaption>⬅︎ 메인 화면</figcaption>
+<figcaption>⬅︎ 뉴스 화면</figcaption>
         </figure>
 </div>
