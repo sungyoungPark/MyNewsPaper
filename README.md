@@ -20,3 +20,5 @@
 <figcaption>⬅︎ 기사</figcaption>
         </figure>
 </div>
+
+![appLaunch](https://user-images.githubusercontent.com/55025822/106364492-c2c45380-6372-11eb-9e68-7ccf6ec9ba84.gif)
